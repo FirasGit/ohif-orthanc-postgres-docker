@@ -1,14 +1,13 @@
-version: '3.6'
+version: "3.6"
 services:
-
   viewer:
-    image: ohif/viewer:v3.7.1.10058
-    container_name: viewer
+    image: ml_ohif:latest
+    container_name: viewer_2
     depends_on:
       - orthanc
     restart: always
     ports:
-      - '80:80'
+      - "80:80"
     networks:
       - frontend
       - backend
@@ -20,10 +19,12 @@ services:
 
   orthanc:
     image: osimis/orthanc:20.2.0
-    container_name: orthanc
+    container_name: orthanc_2
     depends_on:
       - postgres
     restart: always
+    ports:
+      - "8042:8042"
     networks:
       - frontend
       - backend
@@ -41,7 +42,7 @@ services:
 
   postgres:
     image: postgres:12.1
-    container_name: postgres
+    container_name: postgres_2
     networks:
       - backend
     volumes:
@@ -51,6 +52,10 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=${PGDATA}
       - POSTGRES_DB=orthanc
+
+  image_processing_app:
+    image: image_processing_server:latest
+    network_mode: host
 
 networks:
   frontend:
